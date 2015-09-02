@@ -5,22 +5,34 @@
 // - by danmulvey (danmulvey.com)
 // ==============================
 
+var fs      = require('fs');
+var argv    = process.argv.slice(2);
+var code    = "";
+var codePos = 0;
+var tape    = [];
+var tapePos = 0;
 
 // parse command line flags
 function checkFlag() {
-  switch (process.argv[2]) {
+  switch (argv[0]) {
     case '-f':
     case '--file':
-      // read file from argv[3]
+      try {
+        code = fs.readFileSync(argv[1], 'ascii').split('');
+      } catch (err) {
+        console.log("Unable to open file: " + argv[1] + "\n");
+        showHelp();
+      } else {
+        console.log("Invalid command.\n");
+        showHelp();
+      }
       break;
     case '-i':
     case '--input':
-      // get input from argv[3]
-      code = process.argv[3].split('');
+      code = argv[1].split('');
       break;
     case '-h':
     case '--help':
-      // show help screen
       showHelp();
       break;
     default:
@@ -39,4 +51,32 @@ function showHelp() {
   console.log("Example code can be found in ./examples/");
   console.log("For help with brainfuck syntax,");
   console.log("see http://www.muppetlabs.com/~breadbox/bf/");
+}
+
+function run() {
+  while (codePos < code.length) {
+    switch (code[codePos]) {
+      case '>':
+        tapePos++;
+        break;
+      case '<':
+        tapePos--;
+        break;
+      case '+':
+        tape[tapePos]++;
+        break;
+      case '-':
+        tape[tapePos]--;
+        break;
+      case '.':
+        break;
+      case ',':
+        break;
+      case '[':
+        break;
+      case ']':
+        break;
+    }
+    codePos++;
+  }
 }
